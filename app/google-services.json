@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "684061393872",
+    "project_id": "zamono-2ba22"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684061393872:android:05ad93a2209bbacc",
+        "android_client_info": {
+          "package_name": "nikhi.zamono"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684061393872-ch8vthii1v6qq652qfemkd4el4sjcp3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nikhi.zamono",
+            "certificate_hash": "79a9454488e2cf5f1090a1a7c6496384b7147e7a"
+          }
+        },
+        {
+          "client_id": "684061393872-01vsu0qh2vvlipp888oejhlq9cubfipd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTerGBxqZUHo3YNd62eNoRE1by_yuUnwc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
