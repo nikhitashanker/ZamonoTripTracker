@@ -43,17 +43,7 @@ import java.util.Locale;
 
 /**
  * Using location settings.
- * <p/>
- * Uses the {@link com.google.android.gms.location.SettingsApi} to ensure that the device's system
- * settings are properly configured for the app's location needs. When making a request to
- * Location services, the device's system settings may be in a state that prevents the app from
- * obtaining the location data that it needs. For example, GPS or Wi-Fi scanning may be switched
- * off. The {@code SettingsApi} makes it possible to determine if a device's system settings are
- * adequate for the location request, and to optionally invoke a dialog that allows the user to
- * enable the necessary settings.
- * <p/>
- * This sample allows the user to request location updates using the ACCESS_FINE_LOCATION setting
- * (as specified in AndroidManifest.xml).
+ *
  */
 public class MainActivity extends AppCompatActivity {
 
