@@ -30,8 +30,8 @@ import java.util.List;
  */
 public class GeofenceTransitionsIntentService extends IntentService {
 
-    private static final String TAG = "CurrGeofenceTransition";
-
+    private static final String TAG = "GeofenceTransitionsIS"; //Tag used when current geofence is logged
+    private String geofenceTransitionDetails;
     /**
      * This constructor is required, and calls the super IntentService(String)
      * constructor with the name for a worker thread.
@@ -39,6 +39,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     public GeofenceTransitionsIntentService() {
         // Use the TAG to name the worker thread.
         super(TAG);
+        geofenceTransitionDetails = "";
     }
 
     /**
@@ -47,7 +48,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      *               Services (inside a PendingIntent) when addGeofences() is called.
      */
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected String onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -67,16 +68,18 @@ public class GeofenceTransitionsIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Get the transition details as a String.
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
+            geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
                     triggeringGeofences);
 
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
+
         } else {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
         }
+        return geofenceTransitionDetails;
     }
 
     /**
@@ -163,5 +166,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
             default:
                 return getString(R.string.unknown_geofence_transition);
         }
+    }
+
+    @Override
+    public String toString() {
+        return geofenceTransitionDetails;
     }
 }
