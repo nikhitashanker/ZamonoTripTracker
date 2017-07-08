@@ -43,12 +43,10 @@ final class Constants {
 
     static {
         // San Francisco International Airport.
-        HOSPITAL_LANDMARKS.put("SFO", new LatLng(37.621313, -122.378955));
-        HOSPITAL_LANDMARKS.put("SFO", new LatLng(37.621313, -122.378955));
-        HOSPITAL_LANDMARKS.put("SFO", new LatLng(37.621313, -122.378955));
-        // Googleplex.
-        HOSPITAL_LANDMARKS.put("GOOGLE", new LatLng(37.422611,-122.0840577));
-        HOSPITAL_LANDMARKS.put("SFO", new LatLng(37.621313, -122.378955));
-        HOSPITAL_LANDMARKS.put("SFO", new LatLng(37.621313, -122.378955));
+        HOSPITAL_LANDMARKS.put("HOME", new LatLng(37.325330, -122.048352));
+        HOSPITAL_LANDMARKS.put("SPACES", new LatLng(37.380502, -121.960555));
+        HOSPITAL_LANDMARKS.put("West valley", new LatLng(37.621313, -122.378955));
+
+
     }
 }
