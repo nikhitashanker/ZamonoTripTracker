@@ -34,19 +34,34 @@ final class Constants {
      */
     static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
-    static final float GEOFENCE_RADIUS_IN_METERS = 1609; // 1 mile, 1.6 km
+    static final float GEOFENCE_RADIUS_IN_METERS = 30; // 1 mile, 1.6 km
 
     /**
      * Map for storing information about airports in the San Francisco bay area.
      */
     static final HashMap<String, LatLng> HOSPITAL_LANDMARKS = new HashMap<>();
+    static final HashMap<String, Double> DISTANCES = new HashMap<>();
+
 
     static {
         // San Francisco International Airport.
-        HOSPITAL_LANDMARKS.put("HOME", new LatLng(37.325330, -122.048352));
-        HOSPITAL_LANDMARKS.put("SPACES", new LatLng(37.380502, -121.960555));
-        HOSPITAL_LANDMARKS.put("West valley", new LatLng(37.621313, -122.378955));
-
+        HOSPITAL_LANDMARKS.put("HOME", new LatLng(37.324894, -122.048428));
+        HOSPITAL_LANDMARKS.put("SPORTSCENTER", new LatLng(37.324616, -122.047396));
+        HOSPITAL_LANDMARKS.put("MONTAVISTA", new LatLng(37.324420, -122.046826));
 
     }
+    static {
+        // San Francisco International Airport.
+        DISTANCES.put("HOME:SPORTSCENTER", new Double(2.0));
+        DISTANCES.put("SPORTSCENTER:MONTAVISTA", new Double(4.0));
+        DISTANCES.put("MONTAVISTA:HOME", new Double(3.0));
+        DISTANCES.put("HOME:MONTAVISTA", new Double(3.0));
+        DISTANCES.put("MONTAVISTA:SPORTSCENTER", new Double(4.0));
+        DISTANCES.put("SPORTSCENTER:HOME", new Double(2.0));
+
+    }
+
+    static double cost = 4.00;
+
+
 }

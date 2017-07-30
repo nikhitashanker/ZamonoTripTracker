@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
+
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,8 +50,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
      *               Services (inside a PendingIntent) when addGeofences() is called.
      */
     @Override
-    protected String onHandleIntent(Intent intent) {
+    protected void onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+
+        //Collect all the stuff you want to send to activity here
+
+
+
+
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     geofencingEvent.getErrorCode());
@@ -71,6 +79,20 @@ public class GeofenceTransitionsIntentService extends IntentService {
             geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
                     triggeringGeofences);
 
+            /*
+            beginning of addition
+            */
+
+
+            Intent lbcIntent = new Intent("googlegeofence"); //Send to any reciever listening for this
+
+            lbcIntent.putExtra("KEY", geofenceTransitionDetails);  //Put whatever it is you want the activity to handle
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(lbcIntent);
+             /*
+                end of addition
+             */
+
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
@@ -79,7 +101,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
         }
-        return geofenceTransitionDetails;
     }
 
     /**
@@ -168,8 +189,5 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
     }
 
-    @Override
-    public String toString() {
-        return geofenceTransitionDetails;
-    }
+
 }

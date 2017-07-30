@@ -126,6 +126,7 @@
                 android:layout_weight="1"
                 android:onClick="removeGeofencesButtonHandler"
                 android:text="@string/remove_geofences" />
+
         </LinearLayout>
 
         <TextView
@@ -135,6 +136,32 @@
             android:layout_marginLeft="@dimen/small_margin"
             android:layout_marginStart="@dimen/small_margin"
             android:textSize="@dimen/default_text_size" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/next_screen_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="nextScreenHandler"
+                android:text="See Drives" />
+            <Button
+                android:id="@+id/maps_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="mapsHandler"
+                android:text="Maps" />
+
+        </LinearLayout>
+
     </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,12 +1,18 @@
 package nikhi.zamono;
-
+//MZrhYhglhgtONY80O9YF33QdkshJVOWQA
 import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +22,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -44,11 +51,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import nikhi.zamono.FeedReaderContract.FeedEntry;
 /**
  * Libaries necessary for getting location and geofencing
  * <p/>
@@ -129,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
     private TextView mLastUpdateTimeTextView;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
+    private TextView mGeofenceTextView;
 
     // Labels.
     private String mLatitudeLabel;
@@ -172,24 +183,64 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
     // Buttons for kicking off the process of adding or removing geofences.
     private Button mAddGeofencesButton;
     private Button mRemoveGeofencesButton;
+    private Button mNextScreenButton;
 
     private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
+    private ArrayList<String> geofenceUpdates;
+
+    private ArrayList<Trip> record;
+
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        geofenceUpdates = new ArrayList<String>();
+        //Hardcode-----
+
+        //geofenceUpdates.add("Entered: HOME");
+        //geofenceUpdates.add("Exited: HOME");
+        //geofenceUpdates.add("Entered: SPORTSCENTER");
+        //geofenceUpdates.add("Exited: SPORTSCENTER");
+        //geofenceUpdates.add("Entered: MONTAVISTA");
+        //geofenceUpdates.add("Exited: MONTAVISTA");
+        //geofenceUpdates.add("Entered: SPORTSCENTER");
+        //geofenceUpdates.add("Exited: SPORTSCENTER");
+        //geofenceUpdates.add("Entered: MONTAVISTA");
+        //geofenceUpdates.add("Exited: MONTAVISTA");
+
+        System.out.println(Constants.DISTANCES.get("MONTAVISTA:SPORTSCENTER"));
+        System.out.println(Constants.DISTANCES.get("MONTAVISTA:HOME"));
+        System.out.println(Constants.DISTANCES.get("HOME:SPORTSCENTER"));
+        System.out.println(Constants.DISTANCES.get("HOME:MONTAVISTA"));
+        System.out.println(Constants.DISTANCES.get("SPORTSCENTER:MONTAVISTA"));
+        System.out.println(Constants.DISTANCES.get("SPORTSCENTER:HOME"));
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        record = new ArrayList<Trip>();
+        LocalBroadcastManager lbc = LocalBroadcastManager.getInstance(this);
+        GoogleReceiver receiver = new GoogleReceiver(this);
+        lbc.registerReceiver(receiver, new IntentFilter("googlegeofence"));
+        //Anything with this intent will be sent to this receiver
         /*
             Initialize the buttons for longitude and latitude updates
         */
 
         // Locate the UI widgets.
+        mNextScreenButton = (Button) findViewById(R.id.next_screen_button);
+        mNextScreenButton.setEnabled(true);
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+        mGeofenceTextView = (TextView) findViewById(R.id.current_geofence_text);
         /*
             Initialize the buttons for geofencing
         */
@@ -228,6 +279,14 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         populateGeofenceList();
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
+
+
+    }
+
+    public void mapsHandler (android.view.View v) {
+        Intent startNewActivity = new Intent(getBaseContext(), ImageActivity.class);
+        startActivity(startNewActivity);
+        System.out.println("hello");
     }
 
     /**
@@ -348,6 +407,10 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         }
     }
 
+    public void nextScreenHandler(View view) {
+        Intent startNewActivity = new Intent(this, MyActivity.class);
+        startActivity(startNewActivity);
+    }
     /**
      * Handles the Stop Updates button, and requests removal of location updates.
      */
@@ -769,6 +832,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
             Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
             // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
             // addGeofences() and removeGeofences().
+
             return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
@@ -851,5 +915,91 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
             }
         }
 
-/////mGeofencePendingIntent toString method use documentation!
+    class GoogleReceiver extends BroadcastReceiver{
+
+        MainActivity mActivity;
+
+        public GoogleReceiver(Activity activity){
+            mActivity = (MainActivity) activity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String id = intent.getStringExtra("KEY");
+            System.out.println(id);
+            geofenceUpdates.add(id);
+            ((TextView) findViewById(R.id.current_geofence_text)).setText(geofenceUpdates.toString());
+
+
+            for (int i = 1; i < geofenceUpdates.size(); i++) {
+                String currentUpdate = (geofenceUpdates.get(i));
+                String previousUpdate = (geofenceUpdates.get(i-1));
+                if (currentUpdate.contains(getString(R.string.geofence_transition_entered)) && previousUpdate.contains(getString(R.string.geofence_transition_exited)))
+                {
+                    String currLocation = currentUpdate.substring(currentUpdate.indexOf(':')+2);
+                    String prevLocation = previousUpdate.substring(previousUpdate.indexOf(':')+2);
+                    System.out.println(currLocation + ":" + prevLocation);
+                    double distance = Constants.DISTANCES.get(currLocation + ":" + prevLocation);
+                    double addToTotal = distance*Constants.cost;
+
+                    FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getApplicationContext());
+
+                    // Gets the data repository in write mode
+                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+
+                    SQLiteDatabase newDB = mDbHelper.getWritableDatabase();
+                    Cursor c = newDB.rawQuery("select * from " + FeedReaderContract.FeedEntry.TABLE_NAME, null);
+                    double previousCost = 0.00;
+
+                    if (c != null ) {
+                        if (c.moveToFirst()) {
+                            do {
+
+                                previousCost = c.getDouble(c.getColumnIndex("total"));
+
+
+                            } while (c.moveToNext());
+                        }
+                    }
+                    /** ADDING THE NEW ROW **/
+
+                    // Create a new map of values, where column names are the keys
+                    ContentValues values = new ContentValues();
+                    values.put(FeedEntry.COLUMN1_NAME_TITLE, prevLocation);
+                    values.put(FeedEntry.COLUMN2_NAME_TITLE, currLocation);
+                    values.put(FeedEntry.COLUMN3_NAME_TITLE, getDate());
+                    double reimb = Constants.DISTANCES.get(prevLocation+":"+currLocation);
+                    values.put(FeedEntry.COLUMN4_NAME_TITLE, reimb);
+                    values.put(FeedEntry.COLUMN5_NAME_TITLE, previousCost + reimb);
+
+
+                    // Insert the new row, returning the primary key value of the new row
+                    long newRowId = db.insert(FeedEntry.TABLE_NAME, null, values);
+
+                    //clearing has been commented out
+                    geofenceUpdates.clear();
+                }
+
+
+            }
+
+
+
+
+
+
+            //Handle the intent here
+        }
+
     }
+    public String getDate()
+    {
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
+    }
+}
