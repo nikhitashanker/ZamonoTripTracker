@@ -190,31 +190,40 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
     private ArrayList<Trip> record;
 
+    private  SQLiteDatabase newDB;
+
+
 
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getApplicationContext());
+        newDB = mDbHelper.getWritableDatabase();
+
         geofenceUpdates = new ArrayList<String>();
         //Hardcode-----
 
-        //geofenceUpdates.add("Entered: HOME");
-        //geofenceUpdates.add("Exited: HOME");
-        //geofenceUpdates.add("Entered: SPORTSCENTER");
-        //geofenceUpdates.add("Exited: SPORTSCENTER");
-        //geofenceUpdates.add("Entered: MONTAVISTA");
-        //geofenceUpdates.add("Exited: MONTAVISTA");
-        //geofenceUpdates.add("Entered: SPORTSCENTER");
-        //geofenceUpdates.add("Exited: SPORTSCENTER");
-        //geofenceUpdates.add("Entered: MONTAVISTA");
-        //geofenceUpdates.add("Exited: MONTAVISTA");
 
-        System.out.println(Constants.DISTANCES.get("MONTAVISTA:SPORTSCENTER"));
-        System.out.println(Constants.DISTANCES.get("MONTAVISTA:HOME"));
-        System.out.println(Constants.DISTANCES.get("HOME:SPORTSCENTER"));
-        System.out.println(Constants.DISTANCES.get("HOME:MONTAVISTA"));
-        System.out.println(Constants.DISTANCES.get("SPORTSCENTER:MONTAVISTA"));
-        System.out.println(Constants.DISTANCES.get("SPORTSCENTER:HOME"));
+
+        geofenceUpdates.add("Entered: HOME");
+        geofenceUpdates.add("Exited: HOME");
+        geofenceUpdates.add("Entered: SPORTSCENTER");
+        geofenceUpdates.add("Exited: SPORTSCENTER");
+        geofenceUpdates.add("Entered: MONTAVISTA");
+        geofenceUpdates.add("Exited: MONTAVISTA");
+        geofenceUpdates.add("Entered: SPORTSCENTER");
+        geofenceUpdates.add("Exited: SPORTSCENTER");
+        geofenceUpdates.add("Entered: MONTAVISTA");
+        geofenceUpdates.add("Exited: MONTAVISTA");
+
+        //System.out.println(Constants.DISTANCES.get("MONTAVISTA:SPORTSCENTER"));
+        //System.out.println(Constants.DISTANCES.get("MONTAVISTA:HOME"));
+        //System.out.println(Constants.DISTANCES.get("HOME:SPORTSCENTER"));
+        //System.out.println(Constants.DISTANCES.get("HOME:MONTAVISTA"));
+        //System.out.println(Constants.DISTANCES.get("SPORTSCENTER:MONTAVISTA"));
+        //System.out.println(Constants.DISTANCES.get("SPORTSCENTER:HOME"));
 
 
 
@@ -222,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         record = new ArrayList<Trip>();
         LocalBroadcastManager lbc = LocalBroadcastManager.getInstance(this);
@@ -942,13 +953,9 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
                     double distance = Constants.DISTANCES.get(currLocation + ":" + prevLocation);
                     double addToTotal = distance*Constants.cost;
 
-                    FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getApplicationContext());
 
                     // Gets the data repository in write mode
-                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-
-                    SQLiteDatabase newDB = mDbHelper.getWritableDatabase();
                     Cursor c = newDB.rawQuery("select * from " + FeedReaderContract.FeedEntry.TABLE_NAME, null);
                     double previousCost = 0.00;
 
@@ -975,10 +982,11 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
 
                     // Insert the new row, returning the primary key value of the new row
-                    long newRowId = db.insert(FeedEntry.TABLE_NAME, null, values);
+                    long newRowId = newDB.insert(FeedEntry.TABLE_NAME, null, values);
 
                     //clearing has been commented out
-                    geofenceUpdates.clear();
+
+
                 }
 
 
@@ -987,10 +995,12 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
 
 
+            geofenceUpdates.clear();
 
 
             //Handle the intent here
         }
+
 
     }
     public String getDate()

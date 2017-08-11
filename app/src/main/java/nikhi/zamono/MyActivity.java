@@ -68,9 +68,9 @@ public class MyActivity extends ListActivity {
         } catch (SQLiteException se ) {
             Log.e(getClass().getSimpleName(), "Could not create or Open the database");
         } finally {
-            if (newDB != null)
-                newDB.execSQL("DELETE FROM " + tableName);
-            newDB.close();
+            //if (newDB != null)
+                //newDB.execSQL("DELETE FROM " + tableName);
+            //newDB.close();
         }
 
     }

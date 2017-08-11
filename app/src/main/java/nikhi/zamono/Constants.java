@@ -46,7 +46,7 @@ final class Constants {
     static {
         // San Francisco International Airport.
         HOSPITAL_LANDMARKS.put("HOME", new LatLng(37.324894, -122.048428));
-        HOSPITAL_LANDMARKS.put("SPORTSCENTER", new LatLng(37.324616, -122.047396));
+        HOSPITAL_LANDMARKS.put("SPORTSCENTER", new LatLng(37.324682, -122.047318));
         HOSPITAL_LANDMARKS.put("MONTAVISTA", new LatLng(37.324420, -122.046826));
 
     }
